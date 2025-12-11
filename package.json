@@ -10,9 +10,15 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.4.2",
+    "@types/three": "^0.182.0",
+    "gsap": "^3.14.1",
+    "hls.js": "^1.6.15",
     "next": "16.0.8",
     "react": "19.2.1",
-    "react-dom": "19.2.1"
+    "react-dom": "19.2.1",
+    "three": "^0.182.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
