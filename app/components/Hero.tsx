@@ -17,19 +17,23 @@ interface HeroProps {
   videoSrc: string;
   title?: string;
   subtitle?: string;
+  onVideoReady?: () => void;
 }
 
 export default function Hero({ 
   videoSrc, 
-  title = "ashetian",
-  subtitle = "Where is my watch?"
+  title = "ASHETIAN",
+  subtitle = "CREATIVE STUDIO",
+  onVideoReady
 }: HeroProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const blurRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const infoBarRef = useRef<HTMLDivElement>(null);
+  const infoTextRef = useRef<HTMLDivElement>(null);
 
   // HLS Video Setup
   useEffect(() => {
@@ -40,13 +44,26 @@ export default function Hero({
       const hls = new Hls({ enableWorker: true, lowLatencyMode: true });
       hls.loadSource(videoSrc);
       hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
+      
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play().catch(() => {});
+      });
+
+      // Trigger ready when video can play
+      video.oncanplay = () => {
+        if (onVideoReady) onVideoReady();
+      };
+
       return () => hls.destroy();
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = videoSrc;
       video.addEventListener("loadedmetadata", () => video.play().catch(() => {}));
+      
+      video.oncanplay = () => {
+        if (onVideoReady) onVideoReady();
+      };
     }
-  }, [videoSrc]);
+  }, [videoSrc, onVideoReady]);
 
   // GSAP Animations
   useEffect(() => {
@@ -55,6 +72,7 @@ export default function Hero({
       gsap.set(blurRef.current, { y: 0, opacity: 0 });
       gsap.set(titleRef.current, { opacity: 0, y: 40, scale: 0.95 });
       gsap.set(subtitleRef.current, { opacity: 0, y: 20 });
+      gsap.set(infoBarRef.current, { opacity: 0, x: -30 });
 
       // Entrance animation timeline
       const enterTl = gsap.timeline({ 
@@ -66,39 +84,50 @@ export default function Hero({
         .to(titleRef.current, { opacity: 1, y: 0, scale: 1 }, "-=0.6")
         .to(subtitleRef.current, { opacity: 1, y: 0 }, "-=0.8");
 
-      // Scroll animation - smooth parallax
-      gsap.to(blurRef.current, {
-        y: "-100%",
-        ease: "none",
+      // Scroll Timeline - blur moves up, letters disappear, then About comes in
+      const scrollTl = gsap.timeline({
         scrollTrigger: {
           trigger: heroRef.current,
           start: "top top",
-          end: "bottom top",
-          scrub: 1.5, // Smooth scrubbing
+          end: "150% top",
+          scrub: 1,
+          pin: true,
+          pinSpacing: false,
+          anticipatePin: 1,
         }
       });
 
-      gsap.to(contentRef.current, {
-        y: "-80%",
+      // Phase 1: Blur moves up
+      scrollTl.to(blurRef.current, {
+        y: "-100%",
+        ease: "none",
+        duration: 0.5,
+      }, 0);
+
+      scrollTl.to(contentRef.current, {
+        y: "-50%",
         opacity: 0,
         ease: "none",
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "50% top",
-          scrub: 1.5,
-        }
-      });
+        duration: 0.4,
+      }, 0);
 
     }, heroRef);
 
     return () => ctx.revert();
   }, []);
 
+  const splitIntoChars = (text: string) => {
+    return text.split("").map((char, i) => (
+      <span key={i} className="char inline-block">
+        {char === " " ? "\u00A0" : char}
+      </span>
+    ));
+  };
+
   return (
-    <section ref={heroRef} className="relative h-[200vh] w-full">
-      {/* Fixed video background */}
-      <div className="fixed inset-0 h-screen w-full -z-10">
+    <section ref={heroRef} className="relative h-screen w-full overflow-hidden">
+      {/* Video background */}
+      <div className="absolute inset-0 h-full w-full -z-10">
         <video
           ref={videoRef}
           className="h-full w-full object-cover"
@@ -110,14 +139,13 @@ export default function Hero({
         <div className="absolute inset-0 bg-black/20" />
       </div>
 
-      {/* Single Blur Container */}
+      {/* Blur Container */}
       <div 
         ref={blurRef}
-        className="fixed top-0 left-0 right-0 h-[50vh] z-10 will-change-transform"
+        className="absolute bg-black/50 top-0 left-0 right-0 h-[50vh] z-10 will-change-transform"
         style={{
           backdropFilter: "blur(50px) saturate(1.3)",
           WebkitBackdropFilter: "blur(50px) saturate(1.3)",
-          background: "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
         }}
       >
         {/* Content */}
@@ -137,6 +165,7 @@ export default function Hero({
           </p>
         </div>
       </div>
+
     </section>
   );
 }

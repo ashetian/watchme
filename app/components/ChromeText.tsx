@@ -60,12 +60,12 @@ export default function ChromeText({ text, className = "" }: ChromeTextProps) {
 
       {/* Glass text with backdrop blur - distorts background */}
       <h1
-        className="font-unifraktur text-6xl md:text-8xl lg:text-9xl text-center relative"
+        className="font-unifraktur text-7xl md:text-[12rem] lg:text-[14rem] text-center relative"
         style={{
           color: "transparent",
           WebkitTextStroke: "2px rgba(255, 255, 255, 0.5)",
-          backdropFilter: "blur(12px) saturate(1.5)",
-          WebkitBackdropFilter: "blur(8px) saturate(1.5)",
+          // backdropFilter: "blur(12px) saturate(1.5)",
+          // WebkitBackdropFilter: "blur(8px) saturate(1.5)",
           filter: "url(#liquid-distort)",
           textShadow: `
             0 0 10px rgba(255, 255, 255, 0.5),
@@ -82,7 +82,7 @@ export default function ChromeText({ text, className = "" }: ChromeTextProps) {
 
       {/* Strong glow layer */}
       <h1
-        className="font-unifraktur text-6xl md:text-8xl lg:text-9xl text-center absolute inset-0 pointer-events-none"
+        className="font-unifraktur text-7xl md:text-[12rem] lg:text-[14rem] text-center absolute inset-0 pointer-events-none"
         style={{
           color: "transparent",
           WebkitTextStroke: "3px rgba(255, 255, 255, 0.4)",
