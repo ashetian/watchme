@@ -58,8 +58,15 @@ export default function LoadingScreen({ onComplete, canComplete = true }: Loadin
         {/* Foreground Asterisk (Filling) */}
         <div 
           ref={fillRef}
-          className="absolute inset-0 text-[20vh] md:text-[30vh] font-bold leading-none text-white select-none"
-          style={{ clipPath: "inset(100% 0 0 0)" }}
+          className="absolute inset-0 text-[20vh] md:text-[30vh] font-bold leading-none text-transparent select-none"
+          style={{ 
+            clipPath: "inset(100% 0 0 0)",
+            backgroundImage: "url('/bg.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+          }}
         >
           ✱
         </div>

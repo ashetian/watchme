@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Hls from "hls.js";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dynamic from "next/dynamic";
@@ -14,56 +13,23 @@ const ChromeText = dynamic(() => import("./ChromeText"), {
 gsap.registerPlugin(ScrollTrigger);
 
 interface HeroProps {
-  videoSrc: string;
+  videoSrc?: string; // Kept for compatibility but unused
   title?: string;
   subtitle?: string;
   onVideoReady?: () => void;
 }
 
 export default function Hero({ 
-  videoSrc, 
   title = "ASHETIAN",
   subtitle = "CREATIVE STUDIO",
   onVideoReady
 }: HeroProps) {
   const heroRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const blurRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const infoBarRef = useRef<HTMLDivElement>(null);
-  const infoTextRef = useRef<HTMLDivElement>(null);
-
-  // HLS Video Setup
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (Hls.isSupported()) {
-      const hls = new Hls({ enableWorker: true, lowLatencyMode: true });
-      hls.loadSource(videoSrc);
-      hls.attachMedia(video);
-      
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.play().catch(() => {});
-      });
-
-      // Trigger ready when video can play
-      video.oncanplay = () => {
-        if (onVideoReady) onVideoReady();
-      };
-
-      return () => hls.destroy();
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = videoSrc;
-      video.addEventListener("loadedmetadata", () => video.play().catch(() => {}));
-      
-      video.oncanplay = () => {
-        if (onVideoReady) onVideoReady();
-      };
-    }
-  }, [videoSrc, onVideoReady]);
 
   // GSAP Animations
   useEffect(() => {
@@ -116,29 +82,8 @@ export default function Hero({
     return () => ctx.revert();
   }, []);
 
-  const splitIntoChars = (text: string) => {
-    return text.split("").map((char, i) => (
-      <span key={i} className="char inline-block">
-        {char === " " ? "\u00A0" : char}
-      </span>
-    ));
-  };
-
   return (
     <section ref={heroRef} className="relative h-screen w-full overflow-hidden">
-      {/* Video background */}
-      <div className="absolute inset-0 h-full w-full -z-10">
-        <video
-          ref={videoRef}
-          className="h-full w-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
-        <div className="absolute inset-0 bg-black/20" />
-      </div>
-
       {/* Blur Container */}
       <div 
         ref={blurRef}
@@ -169,3 +114,4 @@ export default function Hero({
     </section>
   );
 }
+

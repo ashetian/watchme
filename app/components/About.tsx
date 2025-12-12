@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -133,109 +133,128 @@ export default function About({ className = "" }: AboutProps) {
     { height: "h-84", src: "/masonry/image4.png", alt: "Project 4" },
   ];
 
+  const [bgStyles, setBgStyles] = useState<{top: string, left: string, transform: string}[]>([]);
+
+  useEffect(() => {
+    setBgStyles(masonryImages.map(() => ({
+      top: `${Math.random() * 80}%`,
+      left: `${Math.random() * 60}%`,
+      transform: `rotate(${Math.random() * 20 - 10}deg)`
+    })));
+  }, []);
+
   return (
     <section 
       ref={sectionRef}
-      className={`relative h-[100dvh] overflow-hidden w-full bg-black z-30 ${className}`}
+      className={`relative h-[100dvh] overflow-hidden w-full bg-black z-30 isolation-isolate ${className}`}
     >
-      {/* Scrollable Content Wrapper */}
-      <div className="h-full w-full overflow-y-auto overflow-x-hidden scrollbar-hide">
-        {/* Fullscreen Text Loop */}
-        <div className="w-full flex items-center justify-center overflow-hidden relative py-6 md:py-12 mb-4 md:mb-8">
-          <div className="absolute inset-0 flex flex-col justify-center">
-            {/* Marquee Row 1 */}
-            <div className="marquee-row h-auto flex whitespace-nowrap w-max will-change-transform">
-              {[...Array(8)].map((_, i) => (
-                <span 
-                  key={i}
-                  className="font-unifraktur text-[4vh] md:text-[10vh] leading-none text-white/10 px-2 md:px-6 will-change-transform"
-                  style={{ 
-                    WebkitTextStroke: "1px rgba(255,255,255,0.2)",
-                    color: "transparent"
-                  }}
-                >
-                  ASHETIAN ✱ MILK ✱ 
-                </span>
-              ))}
+      {/* Content Wrapper - No scroll on mobile to ensure strict full screen */}
+      <div className="h-full w-full relative flex flex-col md:block">
+        
+        {/* Mobile Background Images (Blended) */}
+        <div className="md:hidden absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
+          {bgStyles.map((style, i) => (
+            <div 
+              key={`bg-${i}`}
+              className="absolute opacity-50 blur-[1px] brightness-50"
+              style={{
+                top: style.top,
+                left: style.left,
+                width: '50%',
+                height: '40%',
+                transform: style.transform
+              }}
+            >
+              <Image
+                src={masonryImages[i].src}
+                alt=""
+                fill
+                className="object-cover"
+              />
             </div>
+          ))}
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90" />
+        </div>
+
+        {/* Fullscreen Text Loop */}
+        <div className="w-full flex-none flex items-center justify-center overflow-hidden relative py-6 md:py-12 mb-4 md:mb-8 z-10">
+          {/* Marquee Row 1 */}
+          <div className="marquee-row h-auto flex whitespace-nowrap w-max will-change-transform">
+            {[...Array(8)].map((_, i) => (
+              <span 
+                key={i}
+                className="font-unifraktur text-[10vh] md:text-[20vh] leading-none px-8 md:px-16 will-change-transform"
+                style={{ 
+                  WebkitTextStroke: "1px rgba(255, 255, 255, 0.4)",
+                  color: "transparent"
+                }}
+              >
+                ASHETIAN ✱ MILK ✱ 
+              </span>
+            ))}
           </div>
         </div>
 
-        <div ref={contentRef} className="max-w-7xl mx-auto will-change-transform px-4 md:px-8 pb-8 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-          {/* Left Column: Text Content */}
-          <div className="sticky top-4 md:top-32">
-            <h2 
-              ref={titleRef}
-              className="font-unifraktur text-4xl md:text-7xl lg:text-9xl leading-none text-white/90 mb-4 md:mb-12 will-change-transform relative -ml-1 md:-ml-8 lg:-ml-12"
-              style={{
-                textShadow: "0 10px 30px rgba(255,255,255,0.1)",
-                mixBlendMode: "difference"
-              }}
-            >
-              About Me
-            </h2>
-            
-            <div ref={textRef} className="text-white/60 text-[10px] md:text-base max-w-xl will-change-transform pl-3 md:pl-12 border-l border-white/20">
-              <p className="mb-3 md:mb-6 leading-relaxed">
-                I’m a creative developer and designer focused on pushing the boundaries of what digital experiences can be.
-              </p>
-              <p className="leading-relaxed">
-                For me, every project is an exploration—a chance to combine aesthetics, technology, and storytelling into something that feels intentional and unique.
-                I’m driven by minimalism, clarity, and an obsession with detail.
-                I build with purpose, design with attitude.
-              </p>
-            </div>
-          </div>
-
-          {/* Right Column: Animated Masonry */}
-          {/* Mobile: Horizontal Scroll */}
-          <div className="md:hidden w-full overflow-x-auto scrollbar-hide flex gap-3 pb-4">
-            {masonryImages.map((item, i) => (
-              <div 
-                key={`mobile-${i}`}
-                className={`relative flex-shrink-0 w-32 ${item.height} backdrop-blur-sm border border-white/10 rounded-none overflow-hidden`}
+        <div ref={contentRef} className="flex-1 flex items-center md:block max-w-7xl mx-auto w-full px-4 md:px-8 pb-8 z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center w-full">
+            {/* Left Column: Text Content */}
+            <div className="relative z-20">
+              <h2 
+                ref={titleRef}
+                className="font-unifraktur text-6xl md:text-7xl lg:text-9xl leading-none text-white/90 mb-6 md:mb-12 will-change-transform relative -ml-1 md:-ml-8 lg:-ml-12"
+                style={{
+                  textShadow: "0 10px 30px rgba(255,255,255,0.1)",
+                  mixBlendMode: "difference"
+                }}
               >
-                <Image
-                  src={item.src}
-                  alt={item.alt}
-                  fill
-                  className="object-cover opacity-80"
-                />
+                About Me
+              </h2>
+              
+              <div ref={textRef} className="text-white/70 text-sm md:text-base max-w-xl will-change-transform pl-3 md:pl-12 border-l border-white/20 backdrop-blur-none bg-transparent p-0">
+                <p className="mb-4 md:mb-6 leading-relaxed">
+                  I’m a creative developer and designer focused on pushing the boundaries of what digital experiences can be.
+                </p>
+                <p className="leading-relaxed">
+                  For me, every project is an exploration—a chance to combine aesthetics, technology, and storytelling into something that feels intentional and unique.
+                  I’m driven by minimalism, clarity, and an obsession with detail.
+                  I build with purpose, design with attitude.
+                </p>
               </div>
-            ))}
-          </div>
-
-          {/* Desktop: Vertical Grid */}
-          <div className="hidden md:grid grid-cols-2 gap-4 relative">
-            <div className="flex flex-col gap-4 masonry-col-odd pt-8">
-              {masonryImages.slice(0, 2).map((item, i) => (
-                <div 
-                  key={`odd-${i}`}
-                  className={`masonry-item relative w-full ${item.height} backdrop-blur-sm border border-white/10 rounded-none transition-colors duration-500 hover:bg-white/20 overflow-hidden`}
-                >
-                  <Image
-                    src={item.src}
-                    alt={item.alt}
-                    fill
-                    className="object-cover opacity-80 hover:opacity-100 transition-opacity duration-500"
-                  />
-                </div>
-              ))}
             </div>
-            <div className="flex flex-col gap-4 masonry-col-even">
-              {masonryImages.slice(2, 4).map((item, i) => (
-                <div 
-                  key={`even-${i}`}
-                  className={`masonry-item relative w-full ${item.height} backdrop-blur-sm border border-white/10 rounded-none transition-colors duration-500 hover:bg-white/20 overflow-hidden`}
-                >
-                  <Image
-                    src={item.src}
-                    alt={item.alt}
-                    fill
-                    className="object-cover opacity-80 hover:opacity-100 transition-opacity duration-500"
-                  />
-                </div>
-              ))}
+
+            {/* Desktop: Vertical Grid */}
+            <div className="hidden md:grid grid-cols-2 gap-4 relative">
+              <div className="flex flex-col gap-4 masonry-col-odd pt-8">
+                {masonryImages.slice(0, 2).map((item, i) => (
+                  <div 
+                    key={`odd-${i}`}
+                    className={`masonry-item relative w-full ${item.height} backdrop-blur-sm border border-white/10 rounded-none transition-colors duration-500 hover:bg-white/20 overflow-hidden`}
+                  >
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      fill
+                      className="object-cover opacity-80 hover:opacity-100 transition-opacity duration-500"
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-col gap-4 masonry-col-even">
+                {masonryImages.slice(2, 4).map((item, i) => (
+                  <div 
+                    key={`even-${i}`}
+                    className={`masonry-item relative w-full ${item.height} backdrop-blur-sm border border-white/10 rounded-none transition-colors duration-500 hover:bg-white/20 overflow-hidden`}
+                  >
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      fill
+                      className="object-cover opacity-80 hover:opacity-100 transition-opacity duration-500"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
