@@ -81,7 +81,7 @@ function BackgroundContent({ onReady }: { onReady?: () => void }) {
   );
 }
 
-export default function HeroBackground({ onReady, className = "absolute inset-0 -z-10 bg-black" }: { onReady?: () => void, className?: string }) {
+export default function HeroBackground({ onReady, className = "absolute inset-0 -z-10 bg-black", children }: { onReady?: () => void, className?: string, children?: React.ReactNode }) {
   return (
     <div className={className}>
       <Canvas camera={{ position: [0, 0, 1] }} dpr={[1, 2]}>
@@ -90,6 +90,12 @@ export default function HeroBackground({ onReady, className = "absolute inset-0 
         </Suspense>
       </Canvas>
       <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+      {/* Children with blend mode */}
+      {children && (
+        <div className="absolute inset-0 mix-blend-difference pointer-events-none">
+          {children}
+        </div>
+      )}
     </div>
   );
 }

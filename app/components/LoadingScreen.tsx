@@ -22,7 +22,7 @@ export default function LoadingScreen({ onComplete, canComplete = true }: Loadin
               clearInterval(checkComplete);
               // Exit animation
               gsap.to(containerRef.current, {
-                yPercent: -100,
+                yPercent: 100, // Slide down
                 duration: 0.8,
                 ease: "power4.inOut",
                 onComplete: onComplete,

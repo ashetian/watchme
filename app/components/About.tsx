@@ -17,114 +17,7 @@ export default function About({ className = "" }: AboutProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Initial state - below viewport
-      gsap.set(contentRef.current, { y: 100, opacity: 0 });
-      gsap.set(titleRef.current, { y: 50, opacity: 0 });
-      gsap.set(textRef.current, { y: 30, opacity: 0 });
-
-      // Parallax entrance animation
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 20%",
-          scrub: 1,
-        }
-      });
-
-      tl.to(contentRef.current, {
-        y: 0,
-        opacity: 1,
-        ease: "power2.out",
-      });
-
-      // Title and text reveal
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top 60%",
-        onEnter: () => {
-          gsap.to(titleRef.current, {
-            y: 0,
-            opacity: 1,
-            duration: 1,
-            ease: "power3.out",
-          });
-          gsap.to(textRef.current, {
-            y: 0,
-            opacity: 1,
-            duration: 1,
-            delay: 0.2,
-            ease: "power3.out",
-          });
-        },
-        once: true,
-      });
-
-      // Marquee animation
-      gsap.to(".marquee-row", {
-        xPercent: -50,
-        repeat: -1,
-        duration: 50,
-        ease: "linear",
-      });
-
-      // Masonry animation
-      const masonryItems = document.querySelectorAll(".masonry-item");
-      if (masonryItems.length > 0) {
-        // Premium Entrance Animation
-        gsap.fromTo(masonryItems, 
-          { 
-            y: 120, 
-            opacity: 0,
-            scale: 0.95,
-            filter: "blur(10px)"
-          },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            filter: "blur(0px)",
-            duration: 1.5,
-            stagger: 0.15,
-            ease: "power4.out",
-            scrollTrigger: {
-              trigger: contentRef.current,
-              start: "top 65%",
-            }
-          }
-        );
-
-        // Refined Parallax effect for masonry columns
-        gsap.to(".masonry-col-odd", {
-          y: -80,
-          ease: "none",
-          scrollTrigger: {
-            trigger: contentRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1.2,
-          }
-        });
-
-        gsap.to(".masonry-col-even", {
-          y: 80,
-          ease: "none",
-          scrollTrigger: {
-            trigger: contentRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1.2,
-          }
-        });
-      }
-
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const mobileImagesRef = useRef<(HTMLDivElement | null)[]>([]);
 
   const masonryImages = [
     { height: "h-72", src: "/masonry/image2.png", alt: "Project 2" },
@@ -133,14 +26,122 @@ export default function About({ className = "" }: AboutProps) {
     { height: "h-84", src: "/masonry/image4.png", alt: "Project 4" },
   ];
 
-  const [bgStyles, setBgStyles] = useState<{top: string, left: string, transform: string}[]>([]);
+  const [bgStyles, setBgStyles] = useState<{ top: string; left: string; transform: string }[]>([]);
 
   useEffect(() => {
-    setBgStyles(masonryImages.map(() => ({
-      top: `${Math.random() * 80}%`,
-      left: `${Math.random() * 60}%`,
-      transform: `rotate(${Math.random() * 20 - 10}deg)`
-    })));
+    setBgStyles(
+      masonryImages.map(() => ({
+        top: `${Math.random() * 60 + 10}%`,
+        left: `${Math.random() * 40 + 10}%`,
+        transform: `rotate(${Math.random() * 20 - 10}deg)`
+      }))
+    );
+  }, []);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Initial state
+      gsap.set(contentRef.current, { y: 100, opacity: 0 });
+      gsap.set(titleRef.current, { y: 50, opacity: 0 });
+      gsap.set(textRef.current, { y: 30, opacity: 0 });
+      gsap.set(".masonry-item", { opacity: 0, y: 80, scale: 0.9, filter: "blur(10px)" });
+
+      // Marquee animation (always running)
+      gsap.to(".about-marquee-row", {
+        xPercent: -50,
+        repeat: -1,
+        duration: 50,
+        ease: "linear",
+      });
+
+      // Pinned Timeline
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "+=300%",
+          scrub: 1,
+          pin: true,
+        }
+      });
+
+      // 1. Content entrance
+      tl.to(contentRef.current, {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        ease: "power2.out",
+      })
+      // 2. Title reveal
+      .to(titleRef.current, {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        ease: "power3.out",
+      }, "-=0.5")
+      // 3. Text reveal
+      .to(textRef.current, {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        ease: "power3.out",
+      }, "-=0.5");
+
+      // Desktop: Masonry images one by one
+      const masonryItems = gsap.utils.toArray(".masonry-item", sectionRef.current);
+      masonryItems.forEach((item: any, i) => {
+        tl.to(item, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: 1,
+          ease: "power4.out",
+        }, `-=${i === 0 ? 0 : 0.5}`);
+      });
+
+      // Force refresh to ensure positions are correct
+      ScrollTrigger.refresh();
+
+      // Mobile: Background images one by one using refs
+      const mobileImages = mobileImagesRef.current.filter(Boolean);
+      if (mobileImages.length > 0 && window.innerWidth < 768) {
+        mobileImages.forEach((img, i) => {
+          tl.to(img, {
+            opacity: 0.6,
+            scale: 1,
+            duration: 1.5,
+            ease: "power3.out",
+          }, 1 + i * 0.5); // Start at 1s, stagger by 0.5s
+        });
+      }
+
+      // Parallax effect for masonry columns (desktop only)
+      gsap.to(".masonry-col-odd", {
+        y: -60,
+        ease: "none",
+        scrollTrigger: {
+          trigger: contentRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.2,
+        }
+      });
+
+      gsap.to(".masonry-col-even", {
+        y: 60,
+        ease: "none",
+        scrollTrigger: {
+          trigger: contentRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.2,
+        }
+      });
+
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -148,39 +149,43 @@ export default function About({ className = "" }: AboutProps) {
       ref={sectionRef}
       className={`relative h-[100dvh] overflow-hidden w-full bg-black z-30 isolation-isolate ${className}`}
     >
-      {/* Content Wrapper - No scroll on mobile to ensure strict full screen */}
+      {/* Content Wrapper */}
       <div className="h-full w-full relative flex flex-col md:block">
         
-        {/* Mobile Background Images (Blended) */}
+        {/* Mobile Background Images */}
         <div className="md:hidden absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
-          {bgStyles.map((style, i) => (
+          {masonryImages.map((item, i) => (
             <div 
-              key={`bg-${i}`}
-              className="absolute opacity-50 blur-[1px] brightness-50"
+              key={`mobile-bg-${i}`}
+              ref={(el) => { mobileImagesRef.current[i] = el; }}
+              className="absolute"
               style={{
-                top: style.top,
-                left: style.left,
-                width: '50%',
-                height: '40%',
-                transform: style.transform
+                opacity: 0,
+                scale: 0.8,
+                top: bgStyles[i]?.top || '50%',
+                left: bgStyles[i]?.left || '50%',
+                width: '45%',
+                height: '35%',
+                transform: bgStyles[i]?.transform || 'none',
+                filter: 'blur(2px) brightness(0.5)',
               }}
             >
               <Image
-                src={masonryImages[i].src}
+                src={item.src}
                 alt=""
                 fill
                 className="object-cover"
               />
             </div>
           ))}
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90" />
+          <div className="absolute inset-0 bg-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/80" />
         </div>
 
         {/* Fullscreen Text Loop */}
         <div className="w-full flex-none flex items-center justify-center overflow-hidden relative py-6 md:py-12 mb-4 md:mb-8 z-10">
           {/* Marquee Row 1 */}
-          <div className="marquee-row h-auto flex whitespace-nowrap w-max will-change-transform">
+          <div className="about-marquee-row h-auto flex whitespace-nowrap w-max will-change-transform">
             {[...Array(8)].map((_, i) => (
               <span 
                 key={i}
