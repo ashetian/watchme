@@ -148,7 +148,7 @@ export default function About({ className = "" }: AboutProps) {
   return (
     <section 
       ref={sectionRef}
-      className={`relative h-[100dvh] overflow-hidden w-full bg-black z-30 isolation-isolate ${className}`}
+      className={`relative h-screen-fix overflow-hidden w-full bg-black z-30 isolation-isolate ${className}`}
     >
       {/* Content Wrapper */}
       <div className="h-full w-full relative flex flex-col md:block">

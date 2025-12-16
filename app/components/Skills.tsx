@@ -111,7 +111,7 @@ export default function Skills() {
   return (
     <section 
       ref={sectionRef}
-      className="relative w-full h-[100dvh] bg-transparent overflow-hidden z-20 flex items-center justify-center"
+      className="relative w-full h-screen-fix bg-transparent overflow-hidden z-20 flex items-center justify-center"
     >
       {/* Top Text */}
       <div className="absolute top-8 left-4 md:top-12 md:left-12 z-40 flex overflow-hidden mix-blend-difference">

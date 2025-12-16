@@ -80,7 +80,7 @@ export default function Projects({ className = "" }: ProjectsProps) {
     <section 
       id="projects-section"
       ref={sectionRef}
-      className={`relative min-h-[100dvh] border-b border-white/50 w-full bg-black z-30 py-24 md:py-32 overflow-hidden ${className}`}
+      className={`relative min-h-screen-fix border-b border-white/50 w-full bg-black z-30 py-24 md:py-32 overflow-hidden ${className}`}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Header */}

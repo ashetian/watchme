@@ -83,7 +83,7 @@ export default function Hero({
   }, []);
 
   return (
-    <section ref={heroRef} className="relative h-[100dvh] w-full overflow-hidden">
+    <section ref={heroRef} className="relative h-screen-fix w-full overflow-hidden">
       {/* Blur Container */}
       <div 
         ref={blurRef}

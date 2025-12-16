@@ -36,7 +36,7 @@ export default function Contact() {
   return (
     <div 
       ref={containerRef}
-      className="fixed bottom-0 left-0 w-full h-[100dvh] flex flex-col justify-center items-center bg-[#050505] text-white z-0 opacity-0 px-4"
+      className="fixed bottom-0 left-0 w-full h-screen-fix flex flex-col justify-center items-center bg-[#050505] text-white z-0 opacity-0 px-4"
     >
       <div className="max-w-7xl w-full mx-auto flex flex-col items-center text-center">
         <p className="text-white/50 font-mono text-sm md:text-base mb-8 uppercase tracking-widest">
