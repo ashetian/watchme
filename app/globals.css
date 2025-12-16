@@ -35,3 +35,10 @@ body {
   animation: marquee 80s linear infinite;
   will-change: transform;
 }
+
+/* Hardware acceleration utility */
+.gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}

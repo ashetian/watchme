@@ -40,20 +40,22 @@ export default function Projects({ className = "" }: ProjectsProps) {
       projectItems.forEach((item, index) => {
         const img = item.querySelector(".project-img");
         
-        // Parallax Effect
-        gsap.fromTo(img, 
-          { y: "-20%" },
-          {
-            y: "20%",
-            ease: "none",
-            scrollTrigger: {
-              trigger: item,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: true,
+        // Parallax Effect (Desktop only)
+        if (window.innerWidth >= 768) {
+          gsap.fromTo(img, 
+            { y: "-20%" },
+            {
+              y: "20%",
+              ease: "none",
+              scrollTrigger: {
+                trigger: item,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: true,
+              }
             }
-          }
-        );
+          );
+        }
 
         // Directional Entrance Animation
         gsap.from(item, {
@@ -105,9 +107,9 @@ export default function Projects({ className = "" }: ProjectsProps) {
               className={`project-item flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 md:gap-16 items-center`}
             >
               {/* Image Container */}
-              <Link href={`/projects/${project.id}`} className="w-full md:w-2/3 aspect-[4/3] md:aspect-[16/9] relative overflow-hidden border border-white/10 group cursor-pointer">
+              <Link href={`/projects/${project.id}`} className="w-full md:w-2/3 aspect-[4/3] md:aspect-[16/9] relative overflow-hidden border border-white/10 group cursor-pointer will-change-transform gpu">
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10" />
-                <div className="project-img absolute inset-0 w-full h-[140%] -top-[20%]">
+                <div className="project-img absolute inset-0 w-full h-[140%] -top-[20%] will-change-transform">
                   <Image
                     src={project.image}
                     alt={project.title}

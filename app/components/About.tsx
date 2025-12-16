@@ -117,27 +117,29 @@ export default function About({ className = "" }: AboutProps) {
       }
 
       // Parallax effect for masonry columns (desktop only)
-      gsap.to(".masonry-col-odd", {
-        y: -60,
-        ease: "none",
-        scrollTrigger: {
-          trigger: contentRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.2,
-        }
-      });
+      if (window.innerWidth >= 768) {
+        gsap.to(".masonry-col-odd", {
+          y: -60,
+          ease: "none",
+          scrollTrigger: {
+            trigger: contentRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.2,
+          }
+        });
 
-      gsap.to(".masonry-col-even", {
-        y: 60,
-        ease: "none",
-        scrollTrigger: {
-          trigger: contentRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.2,
-        }
-      });
+        gsap.to(".masonry-col-even", {
+          y: 60,
+          ease: "none",
+          scrollTrigger: {
+            trigger: contentRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.2,
+          }
+        });
+      }
 
     }, sectionRef);
 
@@ -189,7 +191,7 @@ export default function About({ className = "" }: AboutProps) {
             {[...Array(8)].map((_, i) => (
               <span 
                 key={i}
-                className="font-unifraktur text-[10vh] md:text-[20vh] leading-none px-8 md:px-16 will-change-transform"
+                className="font-unifraktur text-[10vh] md:text-[20vh] leading-none px-8 md:px-16 will-change-transform gpu"
                 style={{ 
                   WebkitTextStroke: "1px rgba(255, 255, 255, 0.4)",
                   color: "transparent"
@@ -207,11 +209,12 @@ export default function About({ className = "" }: AboutProps) {
             <div className="relative z-20">
               <h2 
                 ref={titleRef}
-                className="font-unifraktur text-6xl md:text-7xl lg:text-9xl leading-none text-white/90 mb-6 md:mb-12 will-change-transform relative -ml-1 md:-ml-8 lg:-ml-12"
                 style={{
                   textShadow: "0 10px 30px rgba(255,255,255,0.1)",
-                  mixBlendMode: "difference"
+                  // Remove mix-blend-mode on mobile for performance
+                  mixBlendMode: "normal" 
                 }}
+                className="font-unifraktur text-6xl md:text-7xl lg:text-9xl leading-none text-white/90 mb-6 md:mb-12 will-change-transform relative -ml-1 md:-ml-8 lg:-ml-12 md:mix-blend-difference"
               >
                 About Me
               </h2>
