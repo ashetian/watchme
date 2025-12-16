@@ -67,9 +67,9 @@ export default function About({ className = "" }: AboutProps) {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: "+=300%", // Unified scroll distance
+            end: isDesktop ? "+=300%" : "+=200%", // Enable scrubbing on mobile
             scrub: 1,
-            pin: true,
+            pin: true, // Enable pinning on mobile
           }
         });
 
@@ -92,39 +92,63 @@ export default function About({ className = "" }: AboutProps) {
           ease: "power3.out",
         }, "-=0.5");
 
-        // Masonry images one by one (Unified for all devices)
-        const masonryItems = gsap.utils.toArray(".masonry-item", sectionRef.current);
-        masonryItems.forEach((item: any, i) => {
-          tl.to(item, {
+        // Desktop: Masonry images one by one
+        if (isDesktop) {
+          const masonryItems = gsap.utils.toArray(".masonry-item", sectionRef.current);
+          masonryItems.forEach((item: any, i) => {
+            tl.to(item, {
+              opacity: 1,
+              scale: 1,
+              duration: 1,
+              ease: "power4.out",
+            }, `-=${i === 0 ? 0 : 0.5}`);
+          });
+
+          // Parallax effect for masonry columns (desktop only)
+          gsap.to(".masonry-col-odd", {
+            y: -60,
+            ease: "none",
+            scrollTrigger: {
+              trigger: contentRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1.2,
+            }
+          });
+
+          gsap.to(".masonry-col-even", {
+            y: 60,
+            ease: "none",
+            scrollTrigger: {
+              trigger: contentRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1.2,
+            }
+          });
+        } else {
+          // Mobile: Simple fade in for all items together
+          tl.to(".masonry-item", {
             opacity: 1,
             scale: 1,
             duration: 1,
-            ease: "power4.out",
-          }, `-=${i === 0 ? 0 : 0.5}`);
-        });
+            stagger: 0.1,
+            ease: "power2.out",
+          }, "-=0.5");
 
-        // Parallax effect for masonry columns (Unified for all devices)
-        gsap.to(".masonry-col-odd", {
-          y: -60,
-          ease: "none",
-          scrollTrigger: {
-            trigger: contentRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1.2,
+          // Mobile: Background images one by one using refs
+          const mobileImages = mobileImagesRef.current.filter(Boolean);
+          if (mobileImages.length > 0) {
+            mobileImages.forEach((img, i) => {
+              tl.to(img, {
+                opacity: 0.6,
+                scale: 1,
+                duration: 1.5,
+                ease: "power3.out",
+              }, 1 + i * 0.5);
+            });
           }
-        });
-
-        gsap.to(".masonry-col-even", {
-          y: 60,
-          ease: "none",
-          scrollTrigger: {
-            trigger: contentRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1.2,
-          }
-        });
+        }
       });
     }, sectionRef);
 
