@@ -6,12 +6,24 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function ViewportFix() {
   useEffect(() => {
+    let ticking = false;
+    let refreshTimeout: NodeJS.Timeout;
+
     const setVh = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-      
-      // Refresh ScrollTrigger to ensure pinned sections adapt to new height
-      ScrollTrigger.refresh();
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const vh = window.innerHeight * 0.01;
+          document.documentElement.style.setProperty("--vh", `${vh}px`);
+          ticking = false;
+        });
+        ticking = true;
+      }
+
+      // Debounce ScrollTrigger refresh to avoid jumps during resize
+      clearTimeout(refreshTimeout);
+      refreshTimeout = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 200);
     };
 
     // Initial set
@@ -19,7 +31,10 @@ export default function ViewportFix() {
 
     window.addEventListener("resize", setVh);
 
-    return () => window.removeEventListener("resize", setVh);
+    return () => {
+      window.removeEventListener("resize", setVh);
+      clearTimeout(refreshTimeout);
+    };
   }, []);
 
   return null;
