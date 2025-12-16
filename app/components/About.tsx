@@ -40,102 +40,116 @@ export default function About({ className = "" }: AboutProps) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Initial state
-      gsap.set(contentRef.current, { opacity: 0 });
-      gsap.set(titleRef.current, { opacity: 0 });
-      gsap.set(textRef.current, { opacity: 0 });
-      gsap.set(".masonry-item", { opacity: 0, scale: 0.9 });
+      const mm = gsap.matchMedia();
 
-      // Marquee animation (always running)
-      gsap.to(".about-marquee-row", {
-        xPercent: -50,
-        repeat: -1,
-        duration: 50,
-        ease: "linear",
-      });
+      mm.add({
+        isDesktop: "(min-width: 768px)",
+        isMobile: "(max-width: 767px)",
+      }, (context) => {
+        const { isDesktop } = context.conditions as { isDesktop: boolean };
 
-      // Pinned Timeline
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "+=300%",
-          scrub: 1,
-          pin: true,
+        // Initial state
+        gsap.set(contentRef.current, { opacity: 0 });
+        gsap.set(titleRef.current, { opacity: 0 });
+        gsap.set(textRef.current, { opacity: 0 });
+        gsap.set(".masonry-item", { opacity: 0, scale: 0.9 });
+
+        // Marquee animation (always running)
+        gsap.to(".about-marquee-row", {
+          xPercent: -50,
+          repeat: -1,
+          duration: 20,
+          ease: "linear",
+        });
+
+        // Main Timeline
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: isDesktop ? "+=300%" : "bottom bottom",
+            scrub: 1,
+            pin: isDesktop,
+          }
+        });
+
+        // 1. Content entrance
+        tl.to(contentRef.current, {
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out",
+        })
+        // 2. Title reveal
+        .to(titleRef.current, {
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+        }, "-=0.5")
+        // 3. Text reveal
+        .to(textRef.current, {
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+        }, "-=0.5");
+
+        // Desktop: Masonry images one by one
+        if (isDesktop) {
+          const masonryItems = gsap.utils.toArray(".masonry-item", sectionRef.current);
+          masonryItems.forEach((item: any, i) => {
+            tl.to(item, {
+              opacity: 1,
+              scale: 1,
+              duration: 1,
+              ease: "power4.out",
+            }, `-=${i === 0 ? 0 : 0.5}`);
+          });
+
+          // Parallax effect for masonry columns (desktop only)
+          gsap.to(".masonry-col-odd", {
+            y: -60,
+            ease: "none",
+            scrollTrigger: {
+              trigger: contentRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1.2,
+            }
+          });
+
+          gsap.to(".masonry-col-even", {
+            y: 60,
+            ease: "none",
+            scrollTrigger: {
+              trigger: contentRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1.2,
+            }
+          });
+        } else {
+          // Mobile: Simple fade in for all items together
+          tl.to(".masonry-item", {
+            opacity: 1,
+            scale: 1,
+            duration: 1,
+            stagger: 0.1,
+            ease: "power2.out",
+          }, "-=0.5");
+
+          // Mobile: Background images one by one using refs
+          const mobileImages = mobileImagesRef.current.filter(Boolean);
+          if (mobileImages.length > 0) {
+            mobileImages.forEach((img, i) => {
+              tl.to(img, {
+                opacity: 0.6,
+                scale: 1,
+                duration: 1.5,
+                ease: "power3.out",
+              }, 1 + i * 0.5);
+            });
+          }
         }
       });
-
-      // 1. Content entrance
-      tl.to(contentRef.current, {
-        opacity: 1,
-        duration: 1,
-        ease: "power2.out",
-      })
-      // 2. Title reveal
-      .to(titleRef.current, {
-        opacity: 1,
-        duration: 1,
-        ease: "power3.out",
-      }, "-=0.5")
-      // 3. Text reveal
-      .to(textRef.current, {
-        opacity: 1,
-        duration: 1,
-        ease: "power3.out",
-      }, "-=0.5");
-
-      // Desktop: Masonry images one by one
-      const masonryItems = gsap.utils.toArray(".masonry-item", sectionRef.current);
-      masonryItems.forEach((item: any, i) => {
-        tl.to(item, {
-          opacity: 1,
-          scale: 1,
-          duration: 1,
-          ease: "power4.out",
-        }, `-=${i === 0 ? 0 : 0.5}`);
-      });
-
-      // Force refresh to ensure positions are correct
-      ScrollTrigger.refresh();
-
-      // Mobile: Background images one by one using refs
-      const mobileImages = mobileImagesRef.current.filter(Boolean);
-      if (mobileImages.length > 0 && window.innerWidth < 768) {
-        mobileImages.forEach((img, i) => {
-          tl.to(img, {
-            opacity: 0.6,
-            scale: 1,
-            duration: 1.5,
-            ease: "power3.out",
-          }, 1 + i * 0.5); // Start at 1s, stagger by 0.5s
-        });
-      }
-
-      // Parallax effect for masonry columns (desktop only)
-      if (window.innerWidth >= 768) {
-        gsap.to(".masonry-col-odd", {
-          y: -60,
-          ease: "none",
-          scrollTrigger: {
-            trigger: contentRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1.2,
-          }
-        });
-
-        gsap.to(".masonry-col-even", {
-          y: 60,
-          ease: "none",
-          scrollTrigger: {
-            trigger: contentRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1.2,
-          }
-        });
-      }
-
     }, sectionRef);
 
     return () => ctx.revert();

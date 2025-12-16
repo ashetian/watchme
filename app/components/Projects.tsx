@@ -23,54 +23,74 @@ export default function Projects({ className = "" }: ProjectsProps) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Title Animation
-      gsap.from(titleRef.current, {
+      const mm = gsap.matchMedia();
 
-        opacity: 0,
-        duration: 1,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 60%",
-          toggleActions: "play none none reverse",
-        }
-      });
+      mm.add({
+        isDesktop: "(min-width: 768px)",
+        isMobile: "(max-width: 767px)",
+      }, (context) => {
+        const { isDesktop } = context.conditions as { isDesktop: boolean };
 
-      // Parallax Project Images & Entrance Animations
-      const projectItems = document.querySelectorAll(".project-item");
-      projectItems.forEach((item, index) => {
-        const img = item.querySelector(".project-img");
-        
-        // Parallax Effect (Desktop only)
-        if (window.innerWidth >= 768) {
-          gsap.fromTo(img, 
-            { y: "-20%" },
-            {
-              y: "20%",
-              ease: "none",
-              scrollTrigger: {
-                trigger: item,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: true,
-              }
-            }
-          );
-        }
-
-        // Directional Entrance Animation
-        gsap.from(item, {
-          x: index % 2 === 0 ? -150 : 150,
+        // Title Animation
+        gsap.from(titleRef.current, {
           opacity: 0,
-          duration: 1.5,
-          ease: "power3.out",
+          duration: 1,
           scrollTrigger: {
-            trigger: item,
+            trigger: titleRef.current,
             start: "top 85%",
             toggleActions: "play none none reverse",
           }
         });
-      });
 
+        // Project Cards Animation
+        const projectItems = document.querySelectorAll(".project-item");
+        projectItems.forEach((item, index) => {
+          const img = item.querySelector(".project-img");
+          
+          if (isDesktop) {
+            // Desktop: Parallax + Directional Entrance
+            // Parallax
+            gsap.fromTo(img, 
+              { y: "-20%" },
+              {
+                y: "20%",
+                ease: "none",
+                scrollTrigger: {
+                  trigger: item,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: true,
+                }
+              }
+            );
+
+            // Directional Entrance
+            gsap.from(item, {
+              x: index % 2 === 0 ? -150 : 150,
+              opacity: 0,
+              duration: 1.5,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: item,
+                start: "top 85%",
+                toggleActions: "play none none reverse",
+              }
+            });
+          } else {
+            // Mobile: Simple Fade In (No movement)
+            gsap.from(item, {
+              opacity: 0,
+              duration: 1,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: item,
+                start: "top 90%",
+                toggleActions: "play none none reverse",
+              }
+            });
+          }
+        });
+      });
     }, sectionRef);
 
     return () => ctx.revert();

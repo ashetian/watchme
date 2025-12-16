@@ -56,49 +56,67 @@ export default function Skills() {
         });
       });
 
-      // Initial State
-      gsap.set(marqueeRef.current, { opacity: 0, scale: 0.9 });
-      gsap.set(titleRef.current, { y: 0, opacity: 1 });
-      gsap.set(".top-text-char", { opacity: 0, y: -20 }); // Initial state for new text
-      gsap.set(".bottom-text-char", { opacity: 0, y: 20 }); // Initial state for new text
+      const mm = gsap.matchMedia();
 
-      // Scroll Reveal Animation
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "+=200%", // Increased scroll distance
-          scrub: 1,
-          pin: true,
+      mm.add({
+        isDesktop: "(min-width: 768px)",
+        isMobile: "(max-width: 767px)",
+      }, (context) => {
+        const { isDesktop } = context.conditions as { isDesktop: boolean };
+
+        // Initial state
+        gsap.set(marqueeRef.current, { opacity: 0, scale: 0.9 });
+        gsap.set(titleRef.current, { y: 0, opacity: 1 });
+        gsap.set(".top-text-char", { opacity: 0, y: -20 }); 
+        gsap.set(".bottom-text-char", { opacity: 0, y: 20 });
+
+        // Scroll Timeline
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: isDesktop ? "+=500%" : "bottom bottom", // Extremely long scroll distance
+            scrub: 1,
+            pin: isDesktop,
+          }
+        });
+
+        // 1. Reveal Marquee (Title slides out, Marquee fades in)
+        tl.to(titleRef.current, {
+          y: -100, // Slide out upwards
+          opacity: 0,
+          duration: 3, // Slow slide out
+          ease: "power2.inOut"
+        })
+        .to(marqueeRef.current, {
+          opacity: 1,
+          scale: 1,
+          duration: 1,
+          ease: "power2.out"
+        }, "-=0.5");
+
+        // 2. Animate Text
+        if (isDesktop) {
+          // Desktop: Complex stagger
+          tl.fromTo(".top-text-char", 
+            { opacity: 0, y: -20 },
+            { opacity: 1, y: 0, stagger: 0.05, duration: 1, ease: "power2.out" }
+          )
+          .fromTo(".bottom-text-char",
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, stagger: -0.05, duration: 1, ease: "power2.out" }, 
+            "-=0.5"
+          );
+        } else {
+          // Mobile: Simple fade in (but keep the sequence)
+          tl.to([".top-text-char", ".bottom-text-char"], {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power2.out"
+          });
         }
       });
-
-      // 1. Reveal Marquee
-      tl.to(titleRef.current, {
-        opacity: 0,
-        duration: 1,
-        ease: "power2.inOut"
-      })
-      .to(marqueeRef.current, {
-        opacity: 1,
-        scale: 1,
-        duration: 1,
-        ease: "power2.out"
-      }, "<");
-
-      // 2. Animate Top Text (L -> R)
-      tl.fromTo(".top-text-char", 
-        { opacity: 0, y: -20 },
-        { opacity: 1, y: 0, stagger: 0.05, duration: 1, ease: "power2.out" }
-      );
-
-      // 3. Animate Bottom Text (R -> L)
-      tl.fromTo(".bottom-text-char",
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, stagger: -0.05, duration: 1, ease: "power2.out" }, // Negative stagger animates from last to first (Right to Left visually if DOM order is L->R)
-        "-=0.5" // Overlap slightly
-      );
-
     }, sectionRef);
 
     return () => ctx.revert();
