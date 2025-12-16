@@ -25,7 +25,7 @@ export default function Projects({ className = "" }: ProjectsProps) {
     const ctx = gsap.context(() => {
       // Title Animation
       gsap.from(titleRef.current, {
-        y: 100,
+
         opacity: 0,
         duration: 1,
         scrollTrigger: {

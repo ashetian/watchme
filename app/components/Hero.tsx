@@ -35,9 +35,9 @@ export default function Hero({
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Set initial states
-      gsap.set(blurRef.current, { y: 0, opacity: 0 });
-      gsap.set(titleRef.current, { opacity: 0, y: 40, scale: 0.95 });
-      gsap.set(subtitleRef.current, { opacity: 0, y: 20 });
+      gsap.set(blurRef.current, { opacity: 0 });
+      gsap.set(titleRef.current, { opacity: 0, scale: 0.95 });
+      gsap.set(subtitleRef.current, { opacity: 0 });
       gsap.set(infoBarRef.current, { opacity: 0, x: -30 });
 
       // Entrance animation timeline
@@ -47,8 +47,8 @@ export default function Hero({
 
       enterTl
         .to(blurRef.current, { opacity: 1, duration: 1 })
-        .to(titleRef.current, { opacity: 1, y: 0, scale: 1 }, "-=0.6")
-        .to(subtitleRef.current, { opacity: 1, y: 0 }, "-=0.8");
+        .to(titleRef.current, { opacity: 1, scale: 1 }, "-=0.6")
+        .to(subtitleRef.current, { opacity: 1 }, "-=0.8");
 
       // Scroll Timeline - blur moves up, letters disappear, then About comes in
       const scrollTl = gsap.timeline({

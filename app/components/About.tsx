@@ -41,10 +41,10 @@ export default function About({ className = "" }: AboutProps) {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Initial state
-      gsap.set(contentRef.current, { y: 100, opacity: 0 });
-      gsap.set(titleRef.current, { y: 50, opacity: 0 });
-      gsap.set(textRef.current, { y: 30, opacity: 0 });
-      gsap.set(".masonry-item", { opacity: 0, y: 80, scale: 0.9 });
+      gsap.set(contentRef.current, { opacity: 0 });
+      gsap.set(titleRef.current, { opacity: 0 });
+      gsap.set(textRef.current, { opacity: 0 });
+      gsap.set(".masonry-item", { opacity: 0, scale: 0.9 });
 
       // Marquee animation (always running)
       gsap.to(".about-marquee-row", {
@@ -67,21 +67,18 @@ export default function About({ className = "" }: AboutProps) {
 
       // 1. Content entrance
       tl.to(contentRef.current, {
-        y: 0,
         opacity: 1,
         duration: 1,
         ease: "power2.out",
       })
       // 2. Title reveal
       .to(titleRef.current, {
-        y: 0,
         opacity: 1,
         duration: 1,
         ease: "power3.out",
       }, "-=0.5")
       // 3. Text reveal
       .to(textRef.current, {
-        y: 0,
         opacity: 1,
         duration: 1,
         ease: "power3.out",
@@ -92,7 +89,6 @@ export default function About({ className = "" }: AboutProps) {
       masonryItems.forEach((item: any, i) => {
         tl.to(item, {
           opacity: 1,
-          y: 0,
           scale: 1,
           duration: 1,
           ease: "power4.out",

@@ -75,7 +75,6 @@ export default function Skills() {
 
       // 1. Reveal Marquee
       tl.to(titleRef.current, {
-        y: "100%",
         opacity: 0,
         duration: 1,
         ease: "power2.inOut"
