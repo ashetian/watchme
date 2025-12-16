@@ -89,30 +89,6 @@ export default function ChromeText({ text, className = "" }: ChromeTextProps) {
           }
         }
       `}</style>
-
-      {/* Strong glow layer */}
-      <h1
-        className="font-unifraktur text-7xl md:text-[12rem] lg:text-[14rem] text-center absolute inset-0 pointer-events-none"
-        style={{
-          color: "transparent",
-          WebkitTextStroke: "3px rgba(255, 255, 255, 0.4)",
-          opacity: 0.7 + Math.sin(time * 2) * 0.2,
-        }}
-      >
-        {text}
-      </h1>
-
-      {/* Outer glow pulse */}
-      <h1
-        className="font-unifraktur text-6xl md:text-8xl lg:text-9xl text-center absolute inset-0 pointer-events-none"
-        style={{
-          color: "transparent",
-          WebkitTextStroke: "4px rgba(255, 255, 255, 0.2)",
-          opacity: 0.5 + Math.sin(time * 1.5) * 0.3,
-        }}
-      >
-        {text}
-      </h1>
     </div>
   );
 }

@@ -34,7 +34,7 @@ export default function Home() {
       {isLoading && (
         <LoadingScreen 
           onComplete={() => setIsLoading(false)} 
-          // Only allow completion if video is ready
+          // Only allow completion if video is ready and component is mounted
           canComplete={isVideoReady}
         />
       )}
@@ -46,7 +46,7 @@ export default function Home() {
       <Skills />
       <Projects />
       {/* Spacer for Contact Reveal */}
-      <div id="contact-spacer" className="h-[100vh] w-full invisible pointer-events-none" style={{ height: "100vh" }} />
+      <div id="contact-spacer" className="h-screen-fix w-full invisible pointer-events-none" />
     </main>
   );
 }

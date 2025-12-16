@@ -28,7 +28,7 @@ export default function LoadingScreen({ onComplete, canComplete = true }: Loadin
                 onComplete: onComplete,
               });
             }
-          }, 100);
+          }, 200);
         }
       });
 
