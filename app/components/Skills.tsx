@@ -75,7 +75,7 @@ export default function Skills() {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: "+=500%", // Unified scroll distance
+            end: isDesktop ? "+=300%" : "+=200%", // Match About.tsx scroll distance
             scrub: 1,
             pin: true,
           }
