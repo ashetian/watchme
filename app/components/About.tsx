@@ -44,7 +44,7 @@ export default function About({ className = "" }: AboutProps) {
       gsap.set(contentRef.current, { y: 100, opacity: 0 });
       gsap.set(titleRef.current, { y: 50, opacity: 0 });
       gsap.set(textRef.current, { y: 30, opacity: 0 });
-      gsap.set(".masonry-item", { opacity: 0, y: 80, scale: 0.9, filter: "blur(10px)" });
+      gsap.set(".masonry-item", { opacity: 0, y: 80, scale: 0.9 });
 
       // Marquee animation (always running)
       gsap.to(".about-marquee-row", {
@@ -94,7 +94,6 @@ export default function About({ className = "" }: AboutProps) {
           opacity: 1,
           y: 0,
           scale: 1,
-          filter: "blur(0px)",
           duration: 1,
           ease: "power4.out",
         }, `-=${i === 0 ? 0 : 0.5}`);
@@ -169,7 +168,7 @@ export default function About({ className = "" }: AboutProps) {
                 width: '45%',
                 height: '35%',
                 transform: bgStyles[i]?.transform || 'none',
-                filter: 'blur(2px) brightness(0.5)',
+                filter: 'brightness(0.5)',
               }}
             >
               <Image
@@ -237,7 +236,7 @@ export default function About({ className = "" }: AboutProps) {
                 {masonryImages.slice(0, 2).map((item, i) => (
                   <div 
                     key={`odd-${i}`}
-                    className={`masonry-item relative w-full ${item.height} backdrop-blur-sm border border-white/10 rounded-none transition-colors duration-500 hover:bg-white/20 overflow-hidden`}
+                    className={`masonry-item relative w-full ${item.height} border border-white/10 rounded-none transition-colors duration-500 hover:bg-white/20 overflow-hidden`}
                   >
                     <Image
                       src={item.src}
@@ -252,7 +251,7 @@ export default function About({ className = "" }: AboutProps) {
                 {masonryImages.slice(2, 4).map((item, i) => (
                   <div 
                     key={`even-${i}`}
-                    className={`masonry-item relative w-full ${item.height} backdrop-blur-sm border border-white/10 rounded-none transition-colors duration-500 hover:bg-white/20 overflow-hidden`}
+                    className={`masonry-item relative w-full ${item.height} border border-white/10 rounded-none transition-colors duration-500 hover:bg-white/20 overflow-hidden`}
                   >
                     <Image
                       src={item.src}

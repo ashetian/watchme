@@ -83,26 +83,12 @@ export default function Hero({
   }, []);
 
   return (
-    <section ref={heroRef} className="relative h-screen w-full overflow-hidden">
+    <section ref={heroRef} className="relative h-[100dvh] w-full overflow-hidden">
       {/* Blur Container */}
       <div 
         ref={blurRef}
-        className="absolute bg-black/50 top-0 left-0 right-0 h-[50vh] z-10 will-change-transform gpu"
-        style={{
-          backdropFilter: "blur(10px) saturate(1.3)", // Reduced blur for mobile default
-          WebkitBackdropFilter: "blur(10px) saturate(1.3)",
-        }}
+        className="absolute bg-black/70 top-0 left-0 right-0 h-[50vh] z-10 will-change-transform gpu"
       >
-        {/* Desktop Blur Override via CSS if needed, or keep reduced for better perf overall */}
-        <style jsx>{`
-          @media (min-width: 768px) {
-            .absolute {
-              backdrop-filter: blur(50px) saturate(1.3) !important;
-              -webkit-backdrop-filter: blur(50px) saturate(1.3) !important;
-            }
-          }
-        `}</style>
-
         {/* Content */}
         <div 
           ref={contentRef}

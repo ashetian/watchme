@@ -57,7 +57,7 @@ export default function Skills() {
       });
 
       // Initial State
-      gsap.set(marqueeRef.current, { opacity: 0, scale: 0.9, filter: "blur(10px)" });
+      gsap.set(marqueeRef.current, { opacity: 0, scale: 0.9 });
       gsap.set(titleRef.current, { y: 0, opacity: 1 });
       gsap.set(".top-text-char", { opacity: 0, y: -20 }); // Initial state for new text
       gsap.set(".bottom-text-char", { opacity: 0, y: 20 }); // Initial state for new text
@@ -83,7 +83,6 @@ export default function Skills() {
       .to(marqueeRef.current, {
         opacity: 1,
         scale: 1,
-        filter: "blur(0px)",
         duration: 1,
         ease: "power2.out"
       }, "<");
@@ -112,7 +111,7 @@ export default function Skills() {
   return (
     <section 
       ref={sectionRef}
-      className="relative w-full h-screen bg-transparent overflow-hidden z-20 flex items-center justify-center"
+      className="relative w-full h-[100dvh] bg-transparent overflow-hidden z-20 flex items-center justify-center"
     >
       {/* Top Text */}
       <div className="absolute top-8 left-4 md:top-12 md:left-12 z-40 flex overflow-hidden mix-blend-difference">

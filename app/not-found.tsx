@@ -137,21 +137,41 @@ export default function NotFound() {
             ref={textRef}
             className="font-unifraktur text-[30vw] md:text-[20vw] leading-none text-white select-none relative z-10"
             style={{ 
-              filter: "url(#fire-distortion)"
+              // filter: "url(#fire-distortion)" // Moved to CSS
             }}
           >
             404
           </h1>
+          <style jsx>{`
+            .fire-text {
+              filter: none;
+            }
+            @media (min-width: 768px) {
+              .fire-text {
+                filter: url(#fire-distortion);
+              }
+            }
+          `}</style>
 
           {/* Glow Layer (Distorted) */}
           <h1 
             className="font-unifraktur text-[30vw] md:text-[20vw] leading-none text-white select-none absolute inset-0 z-0 opacity-80"
-            style={{ 
-              filter: "url(#glow-distortion) blur(10px) drop-shadow(0 0 30px rgba(255,50,0,1)) drop-shadow(0 0 60px rgba(255,100,0,0.8))"
+            style={{
+              // filter: "url(#glow-distortion) blur(10px) drop-shadow(0 0 30px rgba(255,50,0,1)) drop-shadow(0 0 60px rgba(255,100,0,0.8))"
             }}
           >
             404
           </h1>
+           <style jsx>{`
+            .glow-text {
+              filter: blur(5px) drop-shadow(0 0 15px rgba(255,50,0,0.8));
+            }
+            @media (min-width: 768px) {
+              .glow-text {
+                filter: url(#glow-distortion) blur(10px) drop-shadow(0 0 30px rgba(255,50,0,1)) drop-shadow(0 0 60px rgba(255,100,0,0.8));
+              }
+            }
+          `}</style>
         </div>
       </div>
       

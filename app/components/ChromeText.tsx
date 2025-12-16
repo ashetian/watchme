@@ -66,7 +66,7 @@ export default function ChromeText({ text, className = "" }: ChromeTextProps) {
           WebkitTextStroke: "2px rgba(255, 255, 255, 0.5)",
           // backdropFilter: "blur(12px) saturate(1.5)",
           // WebkitBackdropFilter: "blur(8px) saturate(1.5)",
-          filter: "url(#liquid-distort)",
+          // filter: "url(#liquid-distort)", // Moved to CSS for media query support
           textShadow: `
             0 0 10px rgba(255, 255, 255, 0.5),
             0 0 20px rgba(255, 255, 255, 0.4),
@@ -79,6 +79,16 @@ export default function ChromeText({ text, className = "" }: ChromeTextProps) {
       >
         {text}
       </h1>
+      <style jsx>{`
+        h1 {
+          filter: none;
+        }
+        @media (min-width: 768px) {
+          h1 {
+            filter: url(#liquid-distort);
+          }
+        }
+      `}</style>
 
       {/* Strong glow layer */}
       <h1
@@ -86,7 +96,6 @@ export default function ChromeText({ text, className = "" }: ChromeTextProps) {
         style={{
           color: "transparent",
           WebkitTextStroke: "3px rgba(255, 255, 255, 0.4)",
-          filter: "blur(8px)",
           opacity: 0.7 + Math.sin(time * 2) * 0.2,
         }}
       >
@@ -99,7 +108,6 @@ export default function ChromeText({ text, className = "" }: ChromeTextProps) {
         style={{
           color: "transparent",
           WebkitTextStroke: "4px rgba(255, 255, 255, 0.2)",
-          filter: "blur(20px)",
           opacity: 0.5 + Math.sin(time * 1.5) * 0.3,
         }}
       >
