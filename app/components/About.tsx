@@ -67,9 +67,9 @@ export default function About({ className = "" }: AboutProps) {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: isDesktop ? "+=300%" : "bottom bottom",
+            end: isDesktop ? "+=300%" : "+=200%", // Enable scrubbing on mobile
             scrub: 1,
-            pin: isDesktop,
+            pin: true, // Enable pinning on mobile
           }
         });
 

@@ -75,9 +75,9 @@ export default function Skills() {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: isDesktop ? "+=500%" : "bottom bottom", // Extremely long scroll distance
+            end: isDesktop ? "+=500%" : "+=300%", // Long scroll on mobile too
             scrub: 1,
-            pin: isDesktop,
+            pin: true, // Enable pinning on mobile
           }
         });
 
@@ -95,27 +95,16 @@ export default function Skills() {
           ease: "power2.out"
         }, "-=0.5");
 
-        // 2. Animate Text
-        if (isDesktop) {
-          // Desktop: Complex stagger
-          tl.fromTo(".top-text-char", 
-            { opacity: 0, y: -20 },
-            { opacity: 1, y: 0, stagger: 0.05, duration: 1, ease: "power2.out" }
-          )
-          .fromTo(".bottom-text-char",
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, stagger: -0.05, duration: 1, ease: "power2.out" }, 
-            "-=0.5"
-          );
-        } else {
-          // Mobile: Simple fade in (but keep the sequence)
-          tl.to([".top-text-char", ".bottom-text-char"], {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            ease: "power2.out"
-          });
-        }
+        // 2. Animate Text (Same for Desktop and Mobile)
+        tl.fromTo(".top-text-char", 
+          { opacity: 0, y: -20 },
+          { opacity: 1, y: 0, stagger: 0.05, duration: 1, ease: "power2.out" }
+        )
+        .fromTo(".bottom-text-char",
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, stagger: -0.05, duration: 1, ease: "power2.out" }, 
+          "-=0.5"
+        );
       });
     }, sectionRef);
 
