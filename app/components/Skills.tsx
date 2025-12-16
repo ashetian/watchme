@@ -75,9 +75,9 @@ export default function Skills() {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: isDesktop ? "+=500%" : "+=300%", // Long scroll on mobile too
+            end: "+=500%", // Unified scroll distance
             scrub: 1,
-            pin: true, // Enable pinning on mobile
+            pin: true,
           }
         });
 

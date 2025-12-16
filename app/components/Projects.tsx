@@ -42,53 +42,38 @@ export default function Projects({ className = "" }: ProjectsProps) {
           }
         });
 
-        // Project Cards Animation
+        // Project Cards Animation (Unified for all devices)
         const projectItems = document.querySelectorAll(".project-item");
         projectItems.forEach((item, index) => {
           const img = item.querySelector(".project-img");
           
-          if (isDesktop) {
-            // Desktop: Parallax + Directional Entrance
-            // Parallax
-            gsap.fromTo(img, 
-              { y: "-20%" },
-              {
-                y: "20%",
-                ease: "none",
-                scrollTrigger: {
-                  trigger: item,
-                  start: "top bottom",
-                  end: "bottom top",
-                  scrub: true,
-                }
+          // Parallax (Unified)
+          gsap.fromTo(img, 
+            { y: "-20%" },
+            {
+              y: "20%",
+              ease: "none",
+              scrollTrigger: {
+                trigger: item,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: true,
               }
-            );
+            }
+          );
 
-            // Directional Entrance
-            gsap.from(item, {
-              x: index % 2 === 0 ? -150 : 150,
-              opacity: 0,
-              duration: 1.5,
-              ease: "power3.out",
-              scrollTrigger: {
-                trigger: item,
-                start: "top 85%",
-                toggleActions: "play none none reverse",
-              }
-            });
-          } else {
-            // Mobile: Simple Fade In (No movement)
-            gsap.from(item, {
-              opacity: 0,
-              duration: 1,
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: item,
-                start: "top 90%",
-                toggleActions: "play none none reverse",
-              }
-            });
-          }
+          // Directional Entrance (Unified)
+          gsap.from(item, {
+            x: index % 2 === 0 ? -150 : 150,
+            opacity: 0,
+            duration: 1.5,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: item,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            }
+          });
         });
       });
     }, sectionRef);
